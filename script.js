@@ -8,6 +8,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
 const form = document.getElementById("studForm")
 const message = document.getElementById("message")
+const table = document.getElementById("stud_table")
 
 form.addEventListener("submit", async function(e) {
     e.preventDefault()
@@ -29,4 +30,45 @@ form.addEventListener("submit", async function(e) {
     else{
         message.textContent = "Data Saved Successfully"
     }
+    window.addEventListener("DOMContentLoaded", loadStudents)
+
 })
+
+window.loadStudents = async function() {
+    const {data, err} = await supabase.from("students").select("*")
+    if(err){
+        alert(err.message)
+        return
+    }
+
+    data.forEach(element => {
+        const row = `
+        <tr>
+        <td>${element.stud_name}</td>
+        <td>${new Date(element.dob).toLocaleDateString()}</td>
+        <td>${element.grade}</td>
+        </tr>`
+
+        table.innerHTML += row
+    });
+}
+
+window.addEventListener("DOMContentLoaded", loadStudents)
+
+
+
+//  window.login = async function() {
+//     const email = document.getElementById("email").value
+//     const password = document.getElementById("password").value
+
+//     const {err} = await supabase.auth.signInWithPassword({
+//         email,
+//         password
+//     })
+//     if (err){
+//         alert(err.message)
+//     }
+//     else{
+//         window.location.href = "index.html"
+//     }
+// }
